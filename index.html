@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.2, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+<title></title>
+	
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.form.min.js"></script>
+
+<script type="text/javascript">
+
+
+function getStateAndVisualize()
+{
+        var request = $.ajax
+        ({
+                type       : "GET",
+                url        : "http://192.168.178.30:8080/rest/items/Presence_Global/state"
+        });
+
+        request.done( function(data) 
+        { 
+			if(data == "OFF")
+			{
+				var offSwitch = document.getElementById("off");
+				offSwitch.style.display = 'block';
+				
+				var onSwitch = document.getElementById("on");
+				onSwitch.style.display = 'none';		
+			
+			}
+			else
+			{
+				var offSwitch = document.getElementById("off");
+				offSwitch.style.display = 'none';
+				
+				var onSwitch = document.getElementById("on");
+				onSwitch.style.display = 'block';	
+			}         
+        });
+
+        request.fail( function(jqXHR, textStatus ) 
+        { 
+                console.log( "Failure: " + textStatus );
+        });
+}
+
+function getStateAndSwitch()
+{
+        var request = $.ajax
+        ({
+                type       : "GET",
+                url        : "http://192.168.178.30:8080/rest/items/Presence_Global/state"
+        });
+
+        request.done( function(data) 
+        { 
+			if(data == "OFF")
+			{
+				setState("ON");		
+					
+				var offSwitch = document.getElementById("off");
+				offSwitch.style.display = 'none';
+				
+				var onSwitch = document.getElementById("on");
+				onSwitch.style.display = 'block';		
+			
+			}
+			else
+			{
+				setState("OFF");
+				
+				var offSwitch = document.getElementById("off");
+				offSwitch.style.display = 'block';
+				
+				var onSwitch = document.getElementById("on");
+				onSwitch.style.display = 'none';	
+			}         
+        });
+
+        request.fail( function(jqXHR, textStatus ) 
+        { 
+                console.log( "Failure: " + textStatus );
+        });
+}
+
+function setState( txtNewState )
+{
+        var request = $.ajax
+        ({
+                type       : "PUT",
+                url        : "http://192.168.178.30:8080/rest/items/Presence_Global/state",
+                data       : txtNewState, 
+                headers    : { "Content-Type": "text/plain" }
+        });
+
+        request.done( function(data) 
+        { 
+              // alert( "Success" );
+        });
+
+        request.fail( function(jqXHR, textStatus ) 
+        { 
+                alert( "Failure: " + textStatus );
+        });
+}
+	
+</script>
+
+<body onLoad="getStateAndVisualize();">
+
+<div style="display:none" id="on">
+	<image src="./images/on.gif">
+</div>
+<div style="display:none" id="off">
+	<image src="./images/off.gif">
+</div>
+
+<br>
+<input type="image"  onClick="getStateAndSwitch();" text="Alarmschalter" src="./images/alarm.png">
+
+</body>
+</html>
+
+
